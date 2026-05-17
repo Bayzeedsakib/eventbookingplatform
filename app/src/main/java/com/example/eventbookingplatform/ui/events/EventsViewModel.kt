@@ -36,7 +36,7 @@ class EventsViewModel(
             _eventsState.value = EventsUiState.Loading
             runCatching {
                 if (BuildConfig.DEBUG) {
-                    repository.seedDemoEventsIfEmpty()
+                    runCatching { repository.seedDemoEventsIfEmpty() }
                 }
                 val published = repository.fetchPublishedEvents()
                 EventsUiState.Success(

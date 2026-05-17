@@ -17,7 +17,7 @@ class EventRepository(
      * signed in as admin after security rules are deployed. Returns false if skipped or denied.
      */
     suspend fun seedDemoEventsIfEmpty(): Boolean {
-        if (hasAnyEvents()) return false
+        if (hasAnyPublishedEvents()) return false
 
         return runCatching {
             commitSeedBatch()
@@ -28,10 +28,19 @@ class EventRepository(
         }.getOrDefault(false)
     }
 
-    private suspend fun hasAnyEvents(): Boolean {
-        val existing =
-            firestore.collection(Event.COLLECTION_EVENTS).limit(1).get().await()
-        return !existing.isEmpty
+    /**
+     * Must use the same status filter as [fetchPublishedEvents]; an unconstrained
+     * `limit(1)` query is rejected when rules only allow reading published events.
+     */
+    private suspend fun hasAnyPublishedEvents(): Boolean {
+        return runCatching {
+            firestore.collection(Event.COLLECTION_EVENTS)
+                .whereEqualTo(Event.FIELD_STATUS, Event.STATUS_PUBLISHED)
+                .limit(1)
+                .get()
+                .await()
+                .let { !it.isEmpty }
+        }.getOrDefault(false)
     }
 
     private suspend fun seedAsAdminIfEmpty(): Boolean {
@@ -39,7 +48,7 @@ class EventRepository(
         val userDoc =
             firestore.collection(UserProfile.COLLECTION_USERS).document(uid).get().await()
         if (userDoc.getString(UserProfile.FIELD_ROLE) != UserProfile.ROLE_ADMIN) return false
-        if (hasAnyEvents()) return false
+        if (hasAnyPublishedEvents()) return false
         commitSeedBatch()
         return true
     }

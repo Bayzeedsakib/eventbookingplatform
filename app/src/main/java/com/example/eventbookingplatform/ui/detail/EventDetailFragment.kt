@@ -13,6 +13,7 @@ import com.example.eventbookingplatform.MainActivity
 import com.example.eventbookingplatform.R
 import com.example.eventbookingplatform.data.model.Event
 import com.example.eventbookingplatform.databinding.FragmentEventDetailBinding
+import com.example.eventbookingplatform.ui.booking.BookingFragment
 import com.example.eventbookingplatform.ui.auth.AuthUiState
 import com.example.eventbookingplatform.ui.auth.AuthViewModel
 import com.example.eventbookingplatform.ui.events.EventDisplayFormat
@@ -98,8 +99,13 @@ class EventDetailFragment : Fragment() {
     private fun handleBookNow() {
         when (authViewModel.authState.value) {
             is AuthUiState.SignedIn -> {
-                Snackbar.make(binding.root, R.string.booking_coming_soon, Snackbar.LENGTH_SHORT)
-                    .show()
+                val eventId = arguments?.getString(ARG_EVENT_ID).orEmpty()
+                if (eventId.isNotBlank()) {
+                    findNavController().navigate(
+                        R.id.action_eventDetailFragment_to_bookingFragment,
+                        androidx.core.os.bundleOf(BookingFragment.ARG_EVENT_ID to eventId),
+                    )
+                }
             }
             else -> showSignInPrompt()
         }
