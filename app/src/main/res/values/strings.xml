@@ -11,4 +11,17 @@
     <string name="search_hint">Search events, venues…</string>
     <string name="coming_soon">Coming in the next phase</string>
     <string name="guest_name">Guest</string>
+
+    <string name="profile_title">Profile</string>
+    <string name="profile_subtitle_guest">Sign in to book tickets and manage your account</string>
+    <string name="profile_subtitle_signed_in">You are signed in</string>
+    <string name="profile_switch_to_register">New here? Create an account</string>
+    <string name="profile_switch_to_login">Already have an account? Log in</string>
+    <string name="hint_name">Full name</string>
+    <string name="hint_email">Email</string>
+    <string name="hint_password">Password</string>
+    <string name="action_login">Log in</string>
+    <string name="action_register">Create account</string>
+    <string name="action_logout">Log out</string>
+    <string name="role_attendee_label">Attendee</string>
 </resources>
