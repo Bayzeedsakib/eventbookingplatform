@@ -30,9 +30,23 @@ service cloud.firestore {
       allow delete: if false;
     }
 
+    function isInventoryOnlyUpdate() {
+      return request.resource.data.status == resource.data.status
+        && request.resource.data.title == resource.data.title
+        && request.resource.data.description == resource.data.description
+        && request.resource.data.category == resource.data.category
+        && request.resource.data.venue == resource.data.venue
+        && request.resource.data.city == resource.data.city
+        && request.resource.data.startAt == resource.data.startAt
+        && request.resource.data.imageUrl == resource.data.imageUrl
+        && request.resource.data.featured == resource.data.featured
+        && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['ticketTypes']);
+    }
+
     match /events/{eventId} {
       allow read: if isPublishedEvent();
-      allow create, update, delete: if isAdmin();
+      allow create, delete: if isAdmin();
+      allow update: if isAdmin() || (isSignedIn() && isInventoryOnlyUpdate());
     }
 
     match /bookings/{bookingId} {
