@@ -25,6 +25,15 @@ object EventDisplayFormat {
         return context.getString(R.string.event_price_from, minPrice)
     }
 
+    fun capacityLabel(context: Context, event: Event): String {
+        val total = event.totalCapacity
+        return if (total > 0) {
+            context.getString(R.string.event_detail_capacity_value, total)
+        } else {
+            context.getString(R.string.event_detail_capacity_unknown)
+        }
+    }
+
     fun headerBackgroundRes(category: String): Int =
         when (category) {
             Event.CATEGORY_MUSIC -> R.drawable.bg_card_header_music

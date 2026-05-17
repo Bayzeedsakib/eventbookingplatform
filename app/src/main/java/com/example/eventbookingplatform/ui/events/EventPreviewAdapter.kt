@@ -6,18 +6,18 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.example.eventbookingplatform.R
 import com.example.eventbookingplatform.data.model.Event
 import com.example.eventbookingplatform.databinding.ItemEventPreviewBinding
 import java.util.Locale
 
-class EventPreviewAdapter :
-    ListAdapter<Event, EventPreviewAdapter.ViewHolder>(DiffCallback) {
+class EventPreviewAdapter(
+    private val onEventClick: (Event) -> Unit,
+) : ListAdapter<Event, EventPreviewAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
             ItemEventPreviewBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(binding, onEventClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -26,6 +26,7 @@ class EventPreviewAdapter :
 
     class ViewHolder(
         private val binding: ItemEventPreviewBinding,
+        private val onEventClick: (Event) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(event: Event) {
@@ -41,6 +42,7 @@ class EventPreviewAdapter :
                     .uppercase(Locale.getDefault())
             EventDisplayFormat.applyCategoryChipStyle(binding.textCategory, event.category)
             binding.textPrice.text = EventDisplayFormat.priceLabel(context, event)
+            binding.root.setOnClickListener { onEventClick(event) }
         }
     }
 

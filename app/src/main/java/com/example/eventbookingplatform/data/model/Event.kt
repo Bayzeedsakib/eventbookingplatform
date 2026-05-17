@@ -22,6 +22,9 @@ data class Event(
     val minPrice: Double?
         get() = ticketTypes.minOfOrNull { it.price }
 
+    val totalCapacity: Int
+        get() = ticketTypes.sumOf { it.available }
+
     val locationLabel: String
         get() = listOf(venue, city).filter { it.isNotBlank() }.joinToString(" · ")
 
