@@ -10,13 +10,14 @@ import com.example.eventbookingplatform.databinding.ItemEventUpcomingBinding
 import com.example.eventbookingplatform.ui.events.EventDisplayFormat
 import java.util.Locale
 
-class UpcomingEventAdapter :
-    ListAdapter<Event, UpcomingEventAdapter.ViewHolder>(DiffCallback) {
+class UpcomingEventAdapter(
+    private val onEventClick: (Event) -> Unit,
+) : ListAdapter<Event, UpcomingEventAdapter.ViewHolder>(DiffCallback) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         val binding =
             ItemEventUpcomingBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ViewHolder(binding)
+        return ViewHolder(binding, onEventClick)
     }
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
@@ -25,6 +26,7 @@ class UpcomingEventAdapter :
 
     class ViewHolder(
         private val binding: ItemEventUpcomingBinding,
+        private val onEventClick: (Event) -> Unit,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(event: Event) {
@@ -39,6 +41,7 @@ class UpcomingEventAdapter :
             binding.textDate.text = EventDisplayFormat.shortDate(event)
             binding.textLocation.text = event.venue.ifBlank { event.city }
             binding.textPrice.text = EventDisplayFormat.priceLabel(context, event)
+            binding.root.setOnClickListener { onEventClick(event) }
         }
     }
 

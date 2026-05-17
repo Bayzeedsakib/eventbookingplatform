@@ -8,6 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.eventbookingplatform.databinding.FragmentExploreBinding
+import com.example.eventbookingplatform.ui.detail.navigateToEventDetail
 import com.example.eventbookingplatform.ui.events.EventPreviewAdapter
 import com.example.eventbookingplatform.ui.events.EventsListBinder
 import com.example.eventbookingplatform.ui.events.EventsUiState
@@ -19,7 +20,10 @@ class ExploreFragment : Fragment() {
     private val binding get() = _binding!!
 
     private val eventsViewModel: EventsViewModel by activityViewModels()
-    private val eventsAdapter = EventPreviewAdapter()
+    private val eventsAdapter =
+        EventPreviewAdapter { event ->
+            navigateToEventDetail(event)
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,

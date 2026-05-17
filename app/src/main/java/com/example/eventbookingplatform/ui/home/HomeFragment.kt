@@ -15,10 +15,10 @@ import com.example.eventbookingplatform.data.model.Event
 import com.example.eventbookingplatform.databinding.FragmentHomeBinding
 import com.example.eventbookingplatform.ui.auth.AuthUiState
 import com.example.eventbookingplatform.ui.auth.AuthViewModel
+import com.example.eventbookingplatform.ui.detail.navigateToEventDetail
 import com.example.eventbookingplatform.ui.events.EventDisplayFormat
 import com.example.eventbookingplatform.ui.events.EventsUiState
 import com.example.eventbookingplatform.ui.events.EventsViewModel
-import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
 
@@ -32,7 +32,10 @@ class HomeFragment : Fragment() {
     private val categoryAdapter = CategoryChipAdapter { chip ->
         homeViewModel.setSelectedCategory(chip.id)
     }
-    private val upcomingAdapter = UpcomingEventAdapter()
+    private val upcomingAdapter =
+        UpcomingEventAdapter { event ->
+            navigateToEventDetail(event)
+        }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -151,8 +154,10 @@ class HomeFragment : Fragment() {
         binding.featuredCard.textFeaturedDate.text = EventDisplayFormat.shortDate(event)
         binding.featuredCard.textFeaturedLocation.text = event.locationLabel
         binding.featuredCard.buttonGetTickets.setOnClickListener {
-            Snackbar.make(binding.root, R.string.event_detail_coming_soon, Snackbar.LENGTH_SHORT)
-                .show()
+            navigateToEventDetail(event)
+        }
+        binding.featuredCard.root.setOnClickListener {
+            navigateToEventDetail(event)
         }
         binding.featuredCard.root.visibility = View.VISIBLE
     }
