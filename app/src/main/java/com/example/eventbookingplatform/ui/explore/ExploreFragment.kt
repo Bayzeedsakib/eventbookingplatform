@@ -5,26 +5,59 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import com.example.eventbookingplatform.R
-import com.example.eventbookingplatform.databinding.FragmentPlaceholderBinding
+import androidx.fragment.app.activityViewModels
+import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.eventbookingplatform.databinding.FragmentExploreBinding
+import com.example.eventbookingplatform.ui.events.EventPreviewAdapter
+import com.example.eventbookingplatform.ui.events.EventsListBinder
+import com.example.eventbookingplatform.ui.events.EventsUiState
+import com.example.eventbookingplatform.ui.events.EventsViewModel
 
 class ExploreFragment : Fragment() {
 
-    private var _binding: FragmentPlaceholderBinding? = null
+    private var _binding: FragmentExploreBinding? = null
     private val binding get() = _binding!!
+
+    private val eventsViewModel: EventsViewModel by activityViewModels()
+    private val eventsAdapter = EventPreviewAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
-        _binding = FragmentPlaceholderBinding.inflate(inflater, container, false)
+        _binding = FragmentExploreBinding.inflate(inflater, container, false)
         return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        binding.textTitle.setText(R.string.nav_explore)
+
+        binding.recyclerEvents.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = eventsAdapter
+            isNestedScrollingEnabled = false
+        }
+
+        eventsViewModel.eventsState.observe(viewLifecycleOwner) { state ->
+            renderEvents(state)
+        }
+    }
+
+    private fun renderEvents(state: EventsUiState) {
+        val (loading, empty, error) = EventsListBinder.contextStrings(binding.root)
+        EventsListBinder.bindStatus(
+            state = state,
+            statusView = binding.textEventsStatus,
+            loadingText = loading,
+            emptyText = empty,
+            errorText = error,
+        )
+        EventsListBinder.bindRecycler(
+            state = state,
+            recyclerView = binding.recyclerEvents,
+            adapter = eventsAdapter,
+        ) { it.events }
     }
 
     override fun onDestroyView() {

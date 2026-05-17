@@ -5,6 +5,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import androidx.annotation.IdRes
 import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.ui.setupWithNavController
 import com.example.eventbookingplatform.databinding.ActivityMainBinding
@@ -12,6 +13,13 @@ import com.example.eventbookingplatform.databinding.ActivityMainBinding
 class MainActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityMainBinding
+
+    /** Switches tabs the same way as tapping the bottom bar (avoids back-stack issues). */
+    fun selectBottomNavDestination(@IdRes destinationId: Int) {
+        if (binding.bottomNavigation.selectedItemId != destinationId) {
+            binding.bottomNavigation.selectedItemId = destinationId
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

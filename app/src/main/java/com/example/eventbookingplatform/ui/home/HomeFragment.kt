@@ -4,17 +4,21 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.eventbookingplatform.MainActivity
 import com.example.eventbookingplatform.R
+import com.example.eventbookingplatform.data.model.Event
 import com.example.eventbookingplatform.databinding.FragmentHomeBinding
 import com.example.eventbookingplatform.ui.auth.AuthUiState
 import com.example.eventbookingplatform.ui.auth.AuthViewModel
-import com.example.eventbookingplatform.ui.events.EventPreviewAdapter
-import com.example.eventbookingplatform.ui.events.EventsListBinder
+import com.example.eventbookingplatform.ui.events.EventDisplayFormat
 import com.example.eventbookingplatform.ui.events.EventsUiState
 import com.example.eventbookingplatform.ui.events.EventsViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class HomeFragment : Fragment() {
 
@@ -23,9 +27,12 @@ class HomeFragment : Fragment() {
 
     private val authViewModel: AuthViewModel by activityViewModels()
     private val eventsViewModel: EventsViewModel by activityViewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
 
-    private val featuredAdapter = EventPreviewAdapter()
-    private val allEventsAdapter = EventPreviewAdapter()
+    private val categoryAdapter = CategoryChipAdapter { chip ->
+        homeViewModel.setSelectedCategory(chip.id)
+    }
+    private val upcomingAdapter = UpcomingEventAdapter()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,15 +46,34 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.recyclerFeatured.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = featuredAdapter
+        val chipsWithLabels =
+            listOf(
+                CategoryChipItem(HomeFilters.CATEGORY_ALL, getString(R.string.home_category_all)),
+                CategoryChipItem(Event.CATEGORY_MUSIC, getString(R.string.home_category_music)),
+                CategoryChipItem(Event.CATEGORY_TECH, getString(R.string.home_category_tech)),
+                CategoryChipItem(Event.CATEGORY_ART, getString(R.string.home_category_art)),
+            )
+
+        binding.recyclerCategories.apply {
+            layoutManager =
+                LinearLayoutManager(requireContext(), LinearLayoutManager.HORIZONTAL, false)
+            adapter = categoryAdapter
             isNestedScrollingEnabled = false
         }
-        binding.recyclerEvents.apply {
+        categoryAdapter.submitChips(chipsWithLabels, HomeFilters.CATEGORY_ALL)
+
+        binding.recyclerUpcoming.apply {
             layoutManager = LinearLayoutManager(requireContext())
-            adapter = allEventsAdapter
+            adapter = upcomingAdapter
             isNestedScrollingEnabled = false
+        }
+
+        binding.editSearch.addTextChangedListener { editable ->
+            homeViewModel.setSearchQuery(editable?.toString().orEmpty())
+        }
+
+        binding.textSeeAll.setOnClickListener {
+            (requireActivity() as MainActivity).selectBottomNavDestination(R.id.exploreFragment)
         }
 
         authViewModel.authState.observe(viewLifecycleOwner) { state ->
@@ -59,36 +85,83 @@ class HomeFragment : Fragment() {
             binding.textGreeting.text = getString(R.string.home_greeting, displayName)
         }
 
-        eventsViewModel.eventsState.observe(viewLifecycleOwner) { state ->
-            renderEvents(state)
+        eventsViewModel.eventsState.observe(viewLifecycleOwner) { eventsState ->
+            renderHome(eventsState)
+        }
+
+        homeViewModel.searchQuery.observe(viewLifecycleOwner) {
+            eventsViewModel.eventsState.value?.let { renderHome(it) }
+        }
+
+        homeViewModel.selectedCategory.observe(viewLifecycleOwner) { categoryId ->
+            categoryAdapter.submitChips(chipsWithLabels, categoryId)
+            eventsViewModel.eventsState.value?.let { renderHome(it) }
         }
     }
 
-    private fun renderEvents(state: EventsUiState) {
-        val (loading, empty, error) = EventsListBinder.contextStrings(binding.root)
-        EventsListBinder.bindStatus(
-            state = state,
-            statusView = binding.textEventsStatus,
-            loadingText = loading,
-            emptyText = empty,
-            errorText = error,
-        )
-        EventsListBinder.bindRecycler(
-            state = state,
-            recyclerView = binding.recyclerEvents,
-            adapter = allEventsAdapter,
-        ) { it.events }
+    private fun renderHome(eventsState: EventsUiState) {
+        val displayState =
+            homeViewModel.buildDisplayState(
+                eventsState = eventsState,
+                searchQuery = homeViewModel.searchQuery.value.orEmpty(),
+                selectedCategory = homeViewModel.selectedCategory.value ?: HomeFilters.CATEGORY_ALL,
+            )
 
-        val featured =
-            when (state) {
-                is EventsUiState.Success -> state.featuredEvents
-                else -> emptyList()
+        bindStatus(displayState, eventsState)
+        bindFeaturedCard(displayState.featuredEvent)
+        bindUpcomingList(displayState)
+    }
+
+    private fun bindStatus(displayState: HomeDisplayState, eventsState: EventsUiState) {
+        binding.textEventsStatus.visibility = View.GONE
+        binding.recyclerUpcoming.visibility = View.GONE
+        binding.featuredCard.root.visibility = View.GONE
+
+        when {
+            displayState.isLoading -> {
+                binding.textEventsStatus.visibility = View.VISIBLE
+                binding.textEventsStatus.text = getString(R.string.events_loading)
             }
-        val showFeatured = featured.isNotEmpty()
-        binding.textFeaturedHeading.visibility =
-            if (showFeatured) View.VISIBLE else View.GONE
-        binding.recyclerFeatured.visibility = if (showFeatured) View.VISIBLE else View.GONE
-        featuredAdapter.submitList(featured)
+            displayState.errorMessage != null -> {
+                binding.textEventsStatus.visibility = View.VISIBLE
+                binding.textEventsStatus.text = displayState.errorMessage
+            }
+            eventsState is EventsUiState.Success && eventsState.events.isEmpty() -> {
+                binding.textEventsStatus.visibility = View.VISIBLE
+                binding.textEventsStatus.text = getString(R.string.events_empty)
+            }
+            displayState.showNoMatches -> {
+                binding.textEventsStatus.visibility = View.VISIBLE
+                binding.textEventsStatus.text = getString(R.string.events_no_matches)
+            }
+            else -> {
+                binding.recyclerUpcoming.visibility =
+                    if (displayState.upcomingEvents.isNotEmpty()) View.VISIBLE else View.GONE
+            }
+        }
+    }
+
+    private fun bindFeaturedCard(event: Event?) {
+        if (event == null) {
+            binding.featuredCard.root.visibility = View.GONE
+            return
+        }
+
+        binding.featuredCard.textFeaturedTitle.text = event.title
+        binding.featuredCard.textFeaturedDate.text = EventDisplayFormat.shortDate(event)
+        binding.featuredCard.textFeaturedLocation.text = event.locationLabel
+        binding.featuredCard.buttonGetTickets.setOnClickListener {
+            Snackbar.make(binding.root, R.string.event_detail_coming_soon, Snackbar.LENGTH_SHORT)
+                .show()
+        }
+        binding.featuredCard.root.visibility = View.VISIBLE
+    }
+
+    private fun bindUpcomingList(displayState: HomeDisplayState) {
+        upcomingAdapter.submitList(displayState.upcomingEvents)
+        if (displayState.upcomingEvents.isNotEmpty() && !displayState.isLoading) {
+            binding.recyclerUpcoming.visibility = View.VISIBLE
+        }
     }
 
     override fun onDestroyView() {

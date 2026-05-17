@@ -19,6 +19,7 @@ data class UserProfile(
     companion object {
         const val COLLECTION_USERS = "users"
         const val ROLE_ATTENDEE = "attendee"
+        const val ROLE_ADMIN = "admin"
 
         const val FIELD_NAME = "name"
         const val FIELD_EMAIL = "email"
