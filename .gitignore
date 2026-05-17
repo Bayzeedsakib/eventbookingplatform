@@ -13,3 +13,11 @@
 .externalNativeBuild
 .cxx
 local.properties
+
+# Local dev / agent docs (not required to build or run the app)
+AGENTS.md
+/docs/
+app/google-services.json.example
+
+# Firebase config (project-specific; keep local)
+app/google-services.json
