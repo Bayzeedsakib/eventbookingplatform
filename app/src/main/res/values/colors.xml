@@ -1,5 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <!-- Background layers -->
+    <color name="bg_base">#0D0D12</color>
+    <color name="bg_surface">#18181F</color>
+    <color name="bg_elevated">#22222E</color>
+
+    <!-- Primary brand -->
+    <color name="primary">#7C6EF5</color>
+    <color name="primary_dark">#5A4DB8</color>
+    <color name="primary_light">#A89AF9</color>
+
+    <!-- Text -->
+    <color name="text_primary">#F1F1F3</color>
+    <color name="text_secondary">#8888A0</color>
+    <color name="text_hint">#55556A</color>
+
+    <!-- Category tags -->
+    <color name="tag_tech_bg">#1E3A5F</color>
+    <color name="tag_tech_text">#60A5FA</color>
+    <color name="tag_art_bg">#3D2A0A</color>
+    <color name="tag_art_text">#FBBF24</color>
+    <color name="tag_music_bg">#2D1F5E</color>
+    <color name="tag_music_text">#A78BFA</color>
+    <color name="tag_free_bg">#1A3D2B</color>
+    <color name="tag_free_text">#4ADE80</color>
+
+    <!-- Status -->
+    <color name="success">#4ADE80</color>
+    <color name="error">#F87171</color>
+    <color name="warning">#FBBF24</color>
+
+    <color name="on_primary">#FFFFFF</color>
+
+    <!-- Legacy aliases for Material theme -->
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
 </resources>
