@@ -47,26 +47,88 @@
             app:boxCornerRadiusTopEnd="@dimen/corner_xl"
             app:boxCornerRadiusTopStart="@dimen/corner_xl"
             app:boxStrokeColor="@color/bg_elevated"
-            app:hintTextColor="@color/text_hint">
+            app:hintTextColor="@color/text_hint"
+            app:startIconDrawable="@drawable/ic_search"
+            app:startIconTint="@color/text_hint">
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edit_search"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:enabled="false"
+                android:imeOptions="actionSearch"
                 android:inputType="text"
                 android:textColor="@color/text_primary"
                 android:textColorHint="@color/text_hint" />
         </com.google.android.material.textfield.TextInputLayout>
 
-        <TextView
-            android:id="@+id/text_phase_note"
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_categories"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:clipToPadding="false"
+            android:nestedScrollingEnabled="false"
+            android:overScrollMode="never"
+            android:paddingEnd="@dimen/spacing_md"
+            tools:itemCount="4"
+            tools:listitem="@layout/item_category_chip" />
+
+        <include
+            android:id="@+id/featured_card"
+            layout="@layout/layout_featured_event_card"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_lg"
+            android:visibility="gone"
+            tools:visibility="visible" />
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="@dimen/spacing_xl"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
+
+            <TextView
+                android:id="@+id/text_upcoming_heading"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:text="@string/home_upcoming_heading"
+                android:textColor="@color/text_primary"
+                android:textSize="18sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/text_see_all"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingVertical="@dimen/spacing_xs"
+                android:text="@string/home_see_all"
+                android:textColor="@color/primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
+        </LinearLayout>
+
+        <TextView
+            android:id="@+id/text_events_status"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_md"
             android:gravity="center"
-            android:text="@string/coming_soon"
             android:textColor="@color/text_secondary"
-            android:textSize="14sp" />
+            android:textSize="14sp"
+            android:visibility="gone"
+            tools:text="Loading events…"
+            tools:visibility="visible" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recycler_upcoming"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="@dimen/spacing_sm"
+            android:nestedScrollingEnabled="false"
+            tools:itemCount="2"
+            tools:listitem="@layout/item_event_upcoming" />
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
