@@ -44,12 +44,6 @@
                 android:layout_width="match_parent"
                 android:layout_height="220dp">
 
-                <View
-                    android:id="@+id/header_gradient"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:background="@drawable/bg_card_header_default" />
-
                 <ImageView
                     android:id="@+id/image_event"
                     android:layout_width="match_parent"
@@ -58,6 +52,12 @@
                     android:scaleType="centerCrop"
                     android:visibility="gone"
                     tools:visibility="visible" />
+
+                <View
+                    android:id="@+id/header_gradient"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:background="@drawable/bg_card_header_default" />
             </FrameLayout>
 
             <LinearLayout

@@ -88,4 +88,36 @@ class EventRepository(
         val event = Event.fromDocument(document) ?: return null
         return event.takeIf { it.status == Event.STATUS_PUBLISHED }
     }
+
+    suspend fun fetchAllEventsForAdmin(): List<Event> {
+        val snapshot = firestore.collection(Event.COLLECTION_EVENTS).get().await()
+        return snapshot.documents
+            .mapNotNull { Event.fromDocument(it) }
+            .sortedBy { it.startAt }
+    }
+
+    suspend fun fetchEventForAdmin(eventId: String): Event? {
+        val document =
+            firestore.collection(Event.COLLECTION_EVENTS).document(eventId).get().await()
+        if (!document.exists()) return null
+        return Event.fromDocument(document)
+    }
+
+    suspend fun createEvent(event: Event): String {
+        val docRef = firestore.collection(Event.COLLECTION_EVENTS).document()
+        val toSave = event.copy(id = docRef.id)
+        docRef.set(toSave.toMap()).await()
+        return docRef.id
+    }
+
+    suspend fun updateEvent(event: Event) {
+        firestore.collection(Event.COLLECTION_EVENTS)
+            .document(event.id)
+            .set(event.toMap())
+            .await()
+    }
+
+    suspend fun deleteEvent(eventId: String) {
+        firestore.collection(Event.COLLECTION_EVENTS).document(eventId).delete().await()
+    }
 }

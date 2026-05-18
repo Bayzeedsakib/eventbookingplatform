@@ -31,6 +31,12 @@ class EventPreviewAdapter(
 
         fun bind(event: Event) {
             val context = binding.root.context
+            bindEventHeaderImage(
+                imageView = binding.imageEvent,
+                overlayView = binding.headerGradient,
+                imageUrl = event.imageUrl,
+                categoryGradientRes = EventDisplayFormat.headerBackgroundRes(event.category),
+            )
             binding.textTitle.text = event.title
             binding.textDate.text = event.formattedStartDate()
             binding.textLocation.text = event.locationLabel

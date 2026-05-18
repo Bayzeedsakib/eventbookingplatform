@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.eventbookingplatform.data.model.Event
 import com.example.eventbookingplatform.databinding.ItemEventUpcomingBinding
 import com.example.eventbookingplatform.ui.events.EventDisplayFormat
+import com.example.eventbookingplatform.ui.events.bindEventHeaderImage
 import java.util.Locale
 
 class UpcomingEventAdapter(
@@ -31,8 +32,11 @@ class UpcomingEventAdapter(
 
         fun bind(event: Event) {
             val context = binding.root.context
-            binding.headerGradient.setBackgroundResource(
-                EventDisplayFormat.headerBackgroundRes(event.category),
+            bindEventHeaderImage(
+                imageView = binding.imageEvent,
+                overlayView = binding.headerGradient,
+                imageUrl = event.imageUrl,
+                categoryGradientRes = EventDisplayFormat.headerBackgroundRes(event.category),
             )
             binding.textCategory.text =
                 EventDisplayFormat.categoryLabel(event.category).uppercase(Locale.getDefault())

@@ -10,6 +10,9 @@ data class UserProfile(
     val greetingName: String
         get() = name.trim().substringBefore(' ').ifEmpty { name }
 
+    val isAdmin: Boolean
+        get() = role == ROLE_ADMIN
+
     fun toMap(): Map<String, Any> = mapOf(
         FIELD_NAME to name,
         FIELD_EMAIL to email,

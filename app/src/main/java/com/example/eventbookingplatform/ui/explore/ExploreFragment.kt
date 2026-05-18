@@ -64,6 +64,11 @@ class ExploreFragment : Fragment() {
         ) { it.events }
     }
 
+    override fun onResume() {
+        super.onResume()
+        eventsViewModel.loadEvents()
+    }
+
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null

@@ -19,6 +19,7 @@ import com.example.eventbookingplatform.ui.detail.navigateToEventDetail
 import com.example.eventbookingplatform.ui.events.EventDisplayFormat
 import com.example.eventbookingplatform.ui.events.EventsUiState
 import com.example.eventbookingplatform.ui.events.EventsViewModel
+import com.example.eventbookingplatform.ui.events.bindFeaturedCardImage
 
 class HomeFragment : Fragment() {
 
@@ -150,6 +151,12 @@ class HomeFragment : Fragment() {
             return
         }
 
+        bindFeaturedCardImage(
+            imageView = binding.featuredCard.imageFeatured,
+            scrimView = binding.featuredCard.imageFeaturedScrim,
+            contentView = binding.featuredCard.layoutFeaturedContent,
+            imageUrl = event.imageUrl,
+        )
         binding.featuredCard.textFeaturedTitle.text = event.title
         binding.featuredCard.textFeaturedDate.text = EventDisplayFormat.shortDate(event)
         binding.featuredCard.textFeaturedLocation.text = event.locationLabel
@@ -167,6 +174,11 @@ class HomeFragment : Fragment() {
         if (displayState.upcomingEvents.isNotEmpty() && !displayState.isLoading) {
             binding.recyclerUpcoming.visibility = View.VISIBLE
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        eventsViewModel.loadEvents()
     }
 
     override fun onDestroyView() {

@@ -33,7 +33,10 @@ class EventsViewModel(
 
     fun loadEvents() {
         viewModelScope.launch {
-            _eventsState.value = EventsUiState.Loading
+            val showLoading = _eventsState.value !is EventsUiState.Success
+            if (showLoading) {
+                _eventsState.value = EventsUiState.Loading
+            }
             runCatching {
                 if (BuildConfig.DEBUG) {
                     runCatching { repository.seedDemoEventsIfEmpty() }

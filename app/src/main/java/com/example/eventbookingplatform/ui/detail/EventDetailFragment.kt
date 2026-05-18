@@ -17,6 +17,7 @@ import com.example.eventbookingplatform.ui.booking.BookingFragment
 import com.example.eventbookingplatform.ui.auth.AuthUiState
 import com.example.eventbookingplatform.ui.auth.AuthViewModel
 import com.example.eventbookingplatform.ui.events.EventDisplayFormat
+import com.example.eventbookingplatform.ui.events.bindEventHeaderImage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.snackbar.Snackbar
 import java.util.Locale
@@ -79,10 +80,12 @@ class EventDetailFragment : Fragment() {
 
     private fun bindEvent(event: Event) {
         binding.toolbar.title = event.title
-        binding.headerGradient.setBackgroundResource(
-            EventDisplayFormat.headerBackgroundRes(event.category),
+        bindEventHeaderImage(
+            imageView = binding.imageEvent,
+            overlayView = binding.headerGradient,
+            imageUrl = event.imageUrl,
+            categoryGradientRes = EventDisplayFormat.headerBackgroundRes(event.category),
         )
-        binding.imageEvent.isVisible = event.imageUrl.isNotBlank()
 
         binding.textCategory.text =
             EventDisplayFormat.categoryLabel(event.category).uppercase(Locale.getDefault())

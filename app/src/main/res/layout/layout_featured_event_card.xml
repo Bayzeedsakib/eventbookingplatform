@@ -10,95 +10,116 @@
     app:cardElevation="0dp"
     app:strokeWidth="0dp">
 
-    <LinearLayout
+    <FrameLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:background="@drawable/bg_featured_card"
-        android:orientation="vertical"
-        android:padding="@dimen/spacing_lg">
+        android:layout_height="wrap_content">
 
-        <TextView
-            android:id="@+id/text_featured_badge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="end"
-            android:background="@drawable/bg_featured_badge"
-            android:paddingHorizontal="@dimen/spacing_sm"
-            android:paddingVertical="@dimen/spacing_xs"
-            android:text="@string/event_featured_badge"
-            android:textColor="@color/on_primary"
-            android:textSize="11sp"
-            android:textStyle="bold" />
-
-        <TextView
-            android:id="@+id/text_featured_title"
+        <ImageView
+            android:id="@+id/image_featured"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_sm"
-            android:textColor="@color/on_primary"
-            android:textSize="22sp"
-            android:textStyle="bold"
-            tools:text="Neon Nights Festival" />
+            android:layout_height="match_parent"
+            android:contentDescription="@null"
+            android:scaleType="centerCrop"
+            android:visibility="gone" />
+
+        <View
+            android:id="@+id/image_featured_scrim"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="@drawable/bg_header_image_scrim"
+            android:visibility="gone" />
 
         <LinearLayout
+            android:id="@+id/layout_featured_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_calendar_small"
-                app:tint="@color/primary_light" />
+            android:background="@drawable/bg_featured_card"
+            android:orientation="vertical"
+            android:padding="@dimen/spacing_lg">
 
             <TextView
-                android:id="@+id/text_featured_date"
+                android:id="@+id/text_featured_badge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:textColor="@color/primary_light"
-                android:textSize="13sp"
-                tools:text="Jun 14" />
-        </LinearLayout>
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_xs"
-            android:gravity="center_vertical"
-            android:orientation="horizontal">
-
-            <ImageView
-                android:layout_width="16dp"
-                android:layout_height="16dp"
-                android:contentDescription="@null"
-                android:src="@drawable/ic_location_small"
-                app:tint="@color/primary_light" />
+                android:layout_gravity="end"
+                android:background="@drawable/bg_featured_badge"
+                android:paddingHorizontal="@dimen/spacing_sm"
+                android:paddingVertical="@dimen/spacing_xs"
+                android:text="@string/event_featured_badge"
+                android:textColor="@color/on_primary"
+                android:textSize="11sp"
+                android:textStyle="bold" />
 
             <TextView
-                android:id="@+id/text_featured_location"
+                android:id="@+id/text_featured_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_sm"
+                android:textColor="@color/on_primary"
+                android:textSize="22sp"
+                android:textStyle="bold"
+                tools:text="Neon Nights Festival" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_md"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_calendar_small"
+                    app:tint="@color/primary_light" />
+
+                <TextView
+                    android:id="@+id/text_featured_date"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:textColor="@color/primary_light"
+                    android:textSize="13sp"
+                    tools:text="Jun 14" />
+            </LinearLayout>
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/spacing_xs"
+                android:gravity="center_vertical"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="16dp"
+                    android:layout_height="16dp"
+                    android:contentDescription="@null"
+                    android:src="@drawable/ic_location_small"
+                    app:tint="@color/primary_light" />
+
+                <TextView
+                    android:id="@+id/text_featured_location"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="@dimen/spacing_xs"
+                    android:textColor="@color/primary_light"
+                    android:textSize="13sp"
+                    tools:text="Riverside Amphitheater, Dhaka" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/button_get_tickets"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="@dimen/spacing_xs"
-                android:textColor="@color/primary_light"
-                android:textSize="13sp"
-                tools:text="Riverside Amphitheater, Dhaka" />
+                android:layout_marginTop="@dimen/spacing_lg"
+                android:background="@drawable/bg_get_tickets_button"
+                android:paddingHorizontal="@dimen/spacing_lg"
+                android:paddingVertical="@dimen/spacing_sm"
+                android:text="@string/home_get_tickets"
+                android:textColor="@color/primary"
+                android:textSize="14sp"
+                android:textStyle="bold" />
         </LinearLayout>
-
-        <TextView
-            android:id="@+id/button_get_tickets"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_lg"
-            android:background="@drawable/bg_get_tickets_button"
-            android:paddingHorizontal="@dimen/spacing_lg"
-            android:paddingVertical="@dimen/spacing_sm"
-            android:text="@string/home_get_tickets"
-            android:textColor="@color/primary"
-            android:textSize="14sp"
-            android:textStyle="bold" />
-    </LinearLayout>
+    </FrameLayout>
 </com.google.android.material.card.MaterialCardView>

@@ -44,7 +44,7 @@ service cloud.firestore {
     }
 
     match /events/{eventId} {
-      allow read: if isPublishedEvent();
+      allow read: if isPublishedEvent() || isAdmin();
       allow create, delete: if isAdmin();
       allow update: if isAdmin() || (isSignedIn() && isInventoryOnlyUpdate());
     }

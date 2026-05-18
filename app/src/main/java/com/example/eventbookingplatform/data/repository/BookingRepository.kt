@@ -5,6 +5,7 @@ import com.example.eventbookingplatform.data.model.Event
 import com.example.eventbookingplatform.data.model.TicketType
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
 import kotlinx.coroutines.tasks.await
 
 class BookingRepository(
@@ -76,6 +77,21 @@ class BookingRepository(
                 transaction.set(bookingRef, booking.toMap())
                 bookingRef.id
             }.await()
+        }
+    }
+
+    suspend fun fetchUserBookings(): Result<List<Booking>> {
+        val userId = auth.currentUser?.uid
+            ?: return Result.failure(BookingException.NotSignedIn)
+
+        return runCatching {
+            val snapshot =
+                firestore.collection(Booking.COLLECTION_BOOKINGS)
+                    .whereEqualTo(Booking.FIELD_USER_ID, userId)
+                    .orderBy(Booking.FIELD_CREATED_AT, Query.Direction.DESCENDING)
+                    .get()
+                    .await()
+            snapshot.documents.mapNotNull { Booking.fromDocument(it) }
         }
     }
 }

@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
+import androidx.navigation.fragment.findNavController
 import com.example.eventbookingplatform.R
 import com.example.eventbookingplatform.databinding.FragmentProfileBinding
 import com.example.eventbookingplatform.ui.auth.AuthUiState
@@ -54,6 +55,10 @@ class ProfileFragment : Fragment() {
             authViewModel.logout()
         }
 
+        binding.buttonManageEvents.setOnClickListener {
+            findNavController().navigate(R.id.action_profileFragment_to_adminEventsFragment)
+        }
+
         binding.textToggleAuthMode.setOnClickListener {
             isRegisterMode = !isRegisterMode
             authViewModel.clearError()
@@ -87,7 +92,10 @@ class ProfileFragment : Fragment() {
                 val profile = state.profile
                 binding.textUserName.text = profile.name
                 binding.textUserEmail.text = profile.email
-                binding.textUserRole.setText(R.string.role_attendee_label)
+                binding.textUserRole.setText(
+                    if (profile.isAdmin) R.string.role_admin_label else R.string.role_attendee_label,
+                )
+                binding.buttonManageEvents.isVisible = profile.isAdmin
                 binding.textAvatarInitial.text =
                     profile.greetingName.firstOrNull()?.uppercaseChar()?.toString() ?: "?"
             }
