@@ -77,6 +77,10 @@ class TicketsFragment : Fragment() {
             (requireActivity() as MainActivity).selectBottomNavDestination(R.id.profileFragment)
         }
 
+        binding.buttonRetry.setOnClickListener {
+            ticketsViewModel.loadTickets()
+        }
+
         authViewModel.authState.observe(viewLifecycleOwner) { state ->
             val signedIn = state is AuthUiState.SignedIn
             binding.layoutGuest.isVisible = !signedIn && state !is AuthUiState.Loading
@@ -109,10 +113,8 @@ class TicketsFragment : Fragment() {
 
     private fun renderTicketsState(state: TicketsUiState) {
         binding.progressLoading.isVisible = state is TicketsUiState.Loading
+        binding.buttonRetry.isVisible = state is TicketsUiState.Error
         binding.recyclerTickets.isVisible = state is TicketsUiState.Content
-        binding.textStatus.isVisible =
-            state is TicketsUiState.Error ||
-                (state is TicketsUiState.Content && currentListForTab(state).isEmpty())
 
         when (state) {
             TicketsUiState.Loading -> {
@@ -120,6 +122,7 @@ class TicketsFragment : Fragment() {
                 binding.recyclerTickets.isVisible = false
             }
             is TicketsUiState.Error -> {
+                binding.textStatus.isVisible = true
                 binding.textStatus.text =
                     state.message.ifBlank { getString(R.string.tickets_error) }
                 binding.recyclerTickets.isVisible = false

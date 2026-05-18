@@ -4,9 +4,11 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.eventbookingplatform.R
 import com.example.eventbookingplatform.databinding.FragmentExploreBinding
 import com.example.eventbookingplatform.ui.detail.navigateToEventDetail
 import com.example.eventbookingplatform.ui.events.EventPreviewAdapter
@@ -50,18 +52,36 @@ class ExploreFragment : Fragment() {
 
     private fun renderEvents(state: EventsUiState) {
         val (loading, empty, error) = EventsListBinder.contextStrings(binding.root)
-        EventsListBinder.bindStatus(
+        EventsListBinder.bindListStatePanel(
             state = state,
-            statusView = binding.textEventsStatus,
+            panel = binding.listState.root,
+            messageView = binding.listState.textListStateMessage,
+            progressView = binding.listState.progressListState,
+            retryButton = binding.listState.buttonListStateRetry,
             loadingText = loading,
             emptyText = empty,
             errorText = error,
+            onRetry = { eventsViewModel.loadEvents() },
         )
         EventsListBinder.bindRecycler(
             state = state,
             recyclerView = binding.recyclerEvents,
             adapter = eventsAdapter,
         ) { it.events }
+
+        binding.textSubtitle.text =
+            when (state) {
+                is EventsUiState.Success ->
+                    if (state.events.isEmpty()) {
+                        getString(R.string.explore_subtitle_empty)
+                    } else {
+                        getString(R.string.explore_subtitle_count, state.events.size)
+                    }
+                else -> getString(R.string.explore_subtitle)
+            }
+
+        binding.recyclerEvents.isVisible =
+            state is EventsUiState.Success && state.events.isNotEmpty()
     }
 
     override fun onResume() {

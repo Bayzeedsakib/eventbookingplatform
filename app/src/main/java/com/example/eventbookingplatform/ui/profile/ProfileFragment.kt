@@ -12,6 +12,7 @@ import com.example.eventbookingplatform.R
 import com.example.eventbookingplatform.databinding.FragmentProfileBinding
 import com.example.eventbookingplatform.ui.auth.AuthUiState
 import com.example.eventbookingplatform.ui.auth.AuthViewModel
+import com.google.android.material.snackbar.Snackbar
 
 class ProfileFragment : Fragment() {
 
@@ -25,7 +26,7 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
-        savedInstanceState: Bundle?
+        savedInstanceState: Bundle?,
     ): View {
         _binding = FragmentProfileBinding.inflate(inflater, container, false)
         return binding.root
@@ -53,6 +54,8 @@ class ProfileFragment : Fragment() {
 
         binding.buttonLogout.setOnClickListener {
             authViewModel.logout()
+            clearAuthForm()
+            Snackbar.make(binding.root, R.string.profile_logged_out, Snackbar.LENGTH_SHORT).show()
         }
 
         binding.buttonManageEvents.setOnClickListener {
@@ -67,25 +70,37 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    private fun clearAuthForm() {
+        binding.editName.text?.clear()
+        binding.editEmail.text?.clear()
+        binding.editPassword.text?.clear()
+    }
+
     private fun setupAuthModeUi() {
         binding.inputNameLayout.isVisible = isRegisterMode
         binding.buttonPrimaryAuth.setText(
-            if (isRegisterMode) R.string.action_register else R.string.action_login
+            if (isRegisterMode) R.string.action_register else R.string.action_login,
         )
         binding.textToggleAuthMode.setText(
-            if (isRegisterMode) R.string.profile_switch_to_login else R.string.profile_switch_to_register
+            if (isRegisterMode) R.string.profile_switch_to_login else R.string.profile_switch_to_register,
         )
     }
 
     private fun observeAuth() {
         authViewModel.authState.observe(viewLifecycleOwner) { state ->
             val signedIn = state is AuthUiState.SignedIn
+            val loading = state is AuthUiState.Loading
+
+            binding.progressProfile.isVisible = loading
             binding.layoutSignedIn.isVisible = signedIn
-            binding.layoutSignedOut.isVisible = !signedIn && state !is AuthUiState.Loading
+            binding.layoutSignedOut.isVisible = !signedIn && !loading
 
             binding.textProfileSubtitle.setText(
-                if (signedIn) R.string.profile_subtitle_signed_in
-                else R.string.profile_subtitle_guest
+                when {
+                    loading -> R.string.profile_loading
+                    signedIn -> R.string.profile_subtitle_signed_in
+                    else -> R.string.profile_subtitle_guest
+                },
             )
 
             if (state is AuthUiState.SignedIn) {

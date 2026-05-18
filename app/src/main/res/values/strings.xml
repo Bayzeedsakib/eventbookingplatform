@@ -12,6 +12,7 @@
     <string name="tickets_sign_in_action">Sign in</string>
     <string name="tickets_loading">Loading your tickets…</string>
     <string name="tickets_error">Could not load tickets. Please try again.</string>
+    <string name="tickets_retry">Try again</string>
     <string name="tickets_empty_upcoming">No upcoming tickets. Book an event from Home or Explore.</string>
     <string name="tickets_empty_past">No past tickets yet.</string>
     <string name="tickets_line">%1$d × %2$s</string>
@@ -46,6 +47,7 @@
     <string name="event_detail_loading">Loading event…</string>
     <string name="event_detail_not_found">This event is not available.</string>
     <string name="event_detail_error">Could not load event. Please try again.</string>
+    <string name="event_detail_retry">Try again</string>
     <string name="event_detail_capacity_value">%1$d tickets available</string>
     <string name="event_detail_capacity_unknown">Capacity TBA</string>
     <string name="book_now_sign_in_title">Sign in to book</string>
@@ -70,9 +72,12 @@
     <string name="booking_confirmed_snackbar">Booking confirmed</string>
     <string name="booking_view_tickets">View My Tickets</string>
     <string name="explore_subtitle">Browse published events</string>
+    <string name="explore_subtitle_count">%1$d published events</string>
+    <string name="explore_subtitle_empty">No published events right now</string>
     <string name="events_loading">Loading events…</string>
     <string name="events_empty">No published events yet.</string>
-    <string name="events_error">Could not load events. Pull to refresh later.</string>
+    <string name="events_error">Could not load events. Please try again.</string>
+    <string name="action_retry">Try again</string>
     <string name="event_featured_badge">Featured</string>
     <string name="event_price_from">From $%1$.0f</string>
     <string name="event_price_tba">Price TBA</string>
@@ -81,6 +86,8 @@
     <string name="profile_title">Profile</string>
     <string name="profile_subtitle_guest">Sign in to book tickets and manage your account</string>
     <string name="profile_subtitle_signed_in">You are signed in</string>
+    <string name="profile_loading">Loading your account…</string>
+    <string name="profile_logged_out">You have been logged out.</string>
     <string name="profile_switch_to_register">New here? Create an account</string>
     <string name="profile_switch_to_login">Already have an account? Log in</string>
     <string name="hint_name">Full name</string>

@@ -101,6 +101,18 @@
             android:visibility="gone"
             tools:text="No upcoming tickets yet." />
 
+        <com.google.android.material.button.MaterialButton
+            android:id="@+id/button_retry"
+            style="@style/Widget.Material3.Button.OutlinedButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_md"
+            android:text="@string/tickets_retry"
+            android:visibility="gone"
+            app:strokeColor="@color/primary"
+            android:textColor="@color/primary_light" />
+
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_tickets"
             android:layout_width="match_parent"

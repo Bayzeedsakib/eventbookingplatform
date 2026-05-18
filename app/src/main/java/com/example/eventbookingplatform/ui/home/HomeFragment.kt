@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
@@ -111,43 +112,85 @@ class HomeFragment : Fragment() {
                 selectedCategory = homeViewModel.selectedCategory.value ?: HomeFilters.CATEGORY_ALL,
             )
 
+        val showEventContent =
+            !displayState.isLoading &&
+                displayState.errorMessage == null &&
+                !(eventsState is EventsUiState.Success && eventsState.events.isEmpty()) &&
+                !displayState.showNoMatches
+
         bindStatus(displayState, eventsState)
-        bindFeaturedCard(displayState.featuredEvent)
-        bindUpcomingList(displayState)
+        binding.textSeeAll.isVisible =
+            eventsState is EventsUiState.Success && eventsState.events.isNotEmpty()
+
+        if (showEventContent) {
+            bindFeaturedCard(displayState.featuredEvent)
+            bindUpcomingList(displayState)
+        }
     }
 
     private fun bindStatus(displayState: HomeDisplayState, eventsState: EventsUiState) {
-        binding.textEventsStatus.visibility = View.GONE
-        binding.recyclerUpcoming.visibility = View.GONE
-        binding.featuredCard.root.visibility = View.GONE
+        binding.featuredCard.root.isVisible = false
+        binding.recyclerUpcoming.isVisible = false
 
         when {
             displayState.isLoading -> {
-                binding.textEventsStatus.visibility = View.VISIBLE
-                binding.textEventsStatus.text = getString(R.string.events_loading)
+                showListStatePanel(
+                    visible = true,
+                    loading = true,
+                    message = getString(R.string.events_loading),
+                    showRetry = false,
+                )
             }
             displayState.errorMessage != null -> {
-                binding.textEventsStatus.visibility = View.VISIBLE
-                binding.textEventsStatus.text = displayState.errorMessage
+                showListStatePanel(
+                    visible = true,
+                    loading = false,
+                    message = displayState.errorMessage,
+                    showRetry = true,
+                )
             }
             eventsState is EventsUiState.Success && eventsState.events.isEmpty() -> {
-                binding.textEventsStatus.visibility = View.VISIBLE
-                binding.textEventsStatus.text = getString(R.string.events_empty)
+                showListStatePanel(
+                    visible = true,
+                    loading = false,
+                    message = getString(R.string.events_empty),
+                    showRetry = false,
+                )
             }
             displayState.showNoMatches -> {
-                binding.textEventsStatus.visibility = View.VISIBLE
-                binding.textEventsStatus.text = getString(R.string.events_no_matches)
+                showListStatePanel(
+                    visible = true,
+                    loading = false,
+                    message = getString(R.string.events_no_matches),
+                    showRetry = false,
+                )
             }
             else -> {
-                binding.recyclerUpcoming.visibility =
-                    if (displayState.upcomingEvents.isNotEmpty()) View.VISIBLE else View.GONE
+                binding.listState.root.isVisible = false
+                binding.recyclerUpcoming.isVisible = displayState.upcomingEvents.isNotEmpty()
             }
+        }
+    }
+
+    private fun showListStatePanel(
+        visible: Boolean,
+        loading: Boolean,
+        message: String,
+        showRetry: Boolean,
+    ) {
+        binding.listState.root.isVisible = visible
+        binding.listState.progressListState.isVisible = loading
+        binding.listState.textListStateMessage.isVisible = !loading
+        binding.listState.textListStateMessage.text = message
+        binding.listState.buttonListStateRetry.isVisible = showRetry
+        binding.listState.buttonListStateRetry.setOnClickListener {
+            eventsViewModel.loadEvents()
         }
     }
 
     private fun bindFeaturedCard(event: Event?) {
         if (event == null) {
-            binding.featuredCard.root.visibility = View.GONE
+            binding.featuredCard.root.isVisible = false
             return
         }
 
@@ -166,13 +209,13 @@ class HomeFragment : Fragment() {
         binding.featuredCard.root.setOnClickListener {
             navigateToEventDetail(event)
         }
-        binding.featuredCard.root.visibility = View.VISIBLE
+        binding.featuredCard.root.isVisible = true
     }
 
     private fun bindUpcomingList(displayState: HomeDisplayState) {
         upcomingAdapter.submitList(displayState.upcomingEvents)
         if (displayState.upcomingEvents.isNotEmpty() && !displayState.isLoading) {
-            binding.recyclerUpcoming.visibility = View.VISIBLE
+            binding.recyclerUpcoming.isVisible = true
         }
     }
 

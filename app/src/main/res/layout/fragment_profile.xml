@@ -34,6 +34,15 @@
             android:textSize="15sp"
             tools:text="Sign in to book tickets and manage your account" />
 
+        <ProgressBar
+            android:id="@+id/progress_profile"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginTop="@dimen/spacing_xl"
+            android:indeterminateTint="@color/primary"
+            android:visibility="gone" />
+
         <LinearLayout
             android:id="@+id/layout_signed_in"
             android:layout_width="match_parent"

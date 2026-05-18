@@ -110,17 +110,12 @@
                 android:textStyle="bold" />
         </LinearLayout>
 
-        <TextView
-            android:id="@+id/text_events_status"
+        <include
+            android:id="@+id/list_state"
+            layout="@layout/include_list_state"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="@dimen/spacing_md"
-            android:gravity="center"
-            android:textColor="@color/text_secondary"
-            android:textSize="14sp"
-            android:visibility="gone"
-            tools:text="Loading events…"
-            tools:visibility="visible" />
+            android:layout_marginTop="@dimen/spacing_md" />
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/recycler_upcoming"

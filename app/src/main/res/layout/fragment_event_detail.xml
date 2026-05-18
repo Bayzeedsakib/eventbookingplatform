@@ -269,19 +269,18 @@
                 android:textSize="15sp"
                 tools:text="An open-air electronic music night with local DJs." />
 
-            <TextView
-                android:id="@+id/text_status"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="@dimen/spacing_xl"
-                android:gravity="center"
-                android:textColor="@color/text_secondary"
-                android:textSize="14sp"
-                android:visibility="gone"
-                tools:text="Loading event…"
-                tools:visibility="visible" />
         </LinearLayout>
     </androidx.core.widget.NestedScrollView>
+
+    <include
+        android:id="@+id/detail_state"
+        layout="@layout/include_list_state"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:visibility="gone"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        tools:visibility="visible" />
 
     <TextView
         android:id="@+id/button_book_now"

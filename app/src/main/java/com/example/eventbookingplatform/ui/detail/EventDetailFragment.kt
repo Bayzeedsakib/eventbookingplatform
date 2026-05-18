@@ -19,7 +19,6 @@ import com.example.eventbookingplatform.ui.auth.AuthViewModel
 import com.example.eventbookingplatform.ui.events.EventDisplayFormat
 import com.example.eventbookingplatform.ui.events.bindEventHeaderImage
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import com.google.android.material.snackbar.Snackbar
 import java.util.Locale
 
 class EventDetailFragment : Fragment() {
@@ -29,6 +28,8 @@ class EventDetailFragment : Fragment() {
 
     private val viewModel: EventDetailViewModel by viewModels()
     private val authViewModel: AuthViewModel by activityViewModels()
+
+    private var eventId: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +43,7 @@ class EventDetailFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val eventId = arguments?.getString(ARG_EVENT_ID).orEmpty()
+        eventId = arguments?.getString(ARG_EVENT_ID).orEmpty()
 
         binding.toolbar.setNavigationOnClickListener {
             findNavController().navigateUp()
@@ -50,6 +51,10 @@ class EventDetailFragment : Fragment() {
 
         binding.buttonBookNow.setOnClickListener {
             handleBookNow()
+        }
+
+        binding.detailState.buttonListStateRetry.setOnClickListener {
+            viewModel.loadEvent(eventId)
         }
 
         viewModel.uiState.observe(viewLifecycleOwner) { state ->
@@ -60,19 +65,32 @@ class EventDetailFragment : Fragment() {
     }
 
     private fun renderState(state: EventDetailUiState) {
-        binding.textStatus.isVisible = state !is EventDetailUiState.Success
-        binding.scrollContent.isVisible = state is EventDetailUiState.Success
-        binding.buttonBookNow.isVisible = state is EventDetailUiState.Success
+        val showContent = state is EventDetailUiState.Success
+        binding.scrollContent.isVisible = showContent
+        binding.buttonBookNow.isVisible = showContent
+        binding.detailState.root.isVisible = !showContent
 
         when (state) {
             EventDetailUiState.Loading -> {
-                binding.textStatus.text = getString(R.string.event_detail_loading)
+                binding.detailState.progressListState.isVisible = true
+                binding.detailState.textListStateMessage.isVisible = true
+                binding.detailState.textListStateMessage.text =
+                    getString(R.string.event_detail_loading)
+                binding.detailState.buttonListStateRetry.isVisible = false
             }
             EventDetailUiState.NotFound -> {
-                binding.textStatus.text = getString(R.string.event_detail_not_found)
+                binding.detailState.progressListState.isVisible = false
+                binding.detailState.textListStateMessage.isVisible = true
+                binding.detailState.textListStateMessage.text =
+                    getString(R.string.event_detail_not_found)
+                binding.detailState.buttonListStateRetry.isVisible = false
             }
             is EventDetailUiState.Error -> {
-                binding.textStatus.text = state.message
+                binding.detailState.progressListState.isVisible = false
+                binding.detailState.textListStateMessage.isVisible = true
+                binding.detailState.textListStateMessage.text =
+                    state.message.ifBlank { getString(R.string.event_detail_error) }
+                binding.detailState.buttonListStateRetry.isVisible = true
             }
             is EventDetailUiState.Success -> bindEvent(state.event)
         }
@@ -102,7 +120,6 @@ class EventDetailFragment : Fragment() {
     private fun handleBookNow() {
         when (authViewModel.authState.value) {
             is AuthUiState.SignedIn -> {
-                val eventId = arguments?.getString(ARG_EVENT_ID).orEmpty()
                 if (eventId.isNotBlank()) {
                     findNavController().navigate(
                         R.id.action_eventDetailFragment_to_bookingFragment,
