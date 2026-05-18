@@ -30,7 +30,25 @@
     <fragment
         android:id="@+id/profileFragment"
         android:name="com.example.eventbookingplatform.ui.profile.ProfileFragment"
-        android:label="@string/nav_profile" />
+        android:label="@string/nav_profile">
+        <action
+            android:id="@+id/action_profileFragment_to_adminEventsFragment"
+            app:destination="@id/adminEventsFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/adminEventsFragment"
+        android:name="com.example.eventbookingplatform.ui.admin.AdminEventsFragment"
+        android:label="@string/admin_events_title">
+        <action
+            android:id="@+id/action_adminEventsFragment_to_adminEventEditFragment"
+            app:destination="@id/adminEventEditFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/adminEventEditFragment"
+        android:name="com.example.eventbookingplatform.ui.admin.AdminEventEditFragment"
+        android:label="@string/admin_edit_event_title" />
 
     <fragment
         android:id="@+id/eventDetailFragment"

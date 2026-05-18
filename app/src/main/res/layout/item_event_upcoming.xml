@@ -17,10 +17,23 @@
         android:orientation="vertical">
 
         <FrameLayout
-            android:id="@+id/header_gradient"
+            android:id="@+id/header_container"
             android:layout_width="match_parent"
-            android:layout_height="120dp"
-            android:background="@drawable/bg_card_header_default">
+            android:layout_height="120dp">
+
+            <ImageView
+                android:id="@+id/image_event"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:contentDescription="@null"
+                android:scaleType="centerCrop"
+                android:visibility="gone" />
+
+            <View
+                android:id="@+id/header_gradient"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:background="@drawable/bg_card_header_default" />
 
             <TextView
                 android:id="@+id/text_category"

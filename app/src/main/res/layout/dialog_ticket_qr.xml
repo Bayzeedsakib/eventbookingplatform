@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center_horizontal"
+    android:orientation="vertical"
+    android:padding="@dimen/spacing_md">
+
+    <TextView
+        android:id="@+id/text_event_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center"
+        android:textColor="@color/text_primary"
+        android:textSize="18sp"
+        android:textStyle="bold"
+        tools:text="Neon Nights Festival" />
+
+    <TextView
+        android:id="@+id/text_ticket_summary"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_xs"
+        android:gravity="center"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
+        tools:text="2 × VIP" />
+
+    <ImageView
+        android:id="@+id/image_qr"
+        android:layout_width="220dp"
+        android:layout_height="220dp"
+        android:layout_marginTop="@dimen/spacing_lg"
+        android:background="@color/white"
+        android:contentDescription="@string/tickets_qr_content_description"
+        android:padding="@dimen/spacing_sm"
+        android:scaleType="fitCenter"
+        tools:src="@color/bg_elevated" />
+
+    <TextView
+        android:id="@+id/text_booking_id"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_md"
+        android:gravity="center"
+        android:textColor="@color/text_hint"
+        android:textSize="12sp"
+        tools:text="Booking ID: abc123" />
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="@dimen/spacing_sm"
+        android:gravity="center"
+        android:text="@string/tickets_qr_hint"
+        android:textColor="@color/text_secondary"
+        android:textSize="13sp" />
+</LinearLayout>
